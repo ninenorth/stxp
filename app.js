@@ -4,7 +4,7 @@
 // var logger = require('morgan');
 
 // var indexRouter = require('./routes/index');
- 
+
 // var app = express();
 
 // app.use(logger('dev'));
@@ -20,13 +20,15 @@
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', indexRouter);
- 
+
 const express = require('express');
 const path = require('path');
 const app = express();
 const fs = require('fs');
+const qs = require('querystring');
+const internalIp = require('ip');
 var template = require('./public/template.js');
-
+var notetxt = '';
 
 
 
@@ -34,8 +36,17 @@ var template = require('./public/template.js');
 
 app.use(express.static('public'))
 
+
+
 app.get('/', (req, res) => {
 
+  var myLocaIP = internalIp.address();
+  // ============== Add Note Box ==========================================
+  fs.readFile(path.join(__dirname, 'public', 'note_txt.txt'), (err, data) => {
+    notetxt = String(data);
+  });
+
+  // ============== create LISTs from JSON ==========================================
   fs.readFile(path.join(__dirname, 'public', 'url_list.json'), (err, data) => {
     if (err) {
       console.error('There was an error reading the file!', err);
@@ -53,21 +64,171 @@ app.get('/', (req, res) => {
     list_c = appendItem(obj, 'listC', list_c);
     list_d = appendItem(obj, 'listD', list_d);
 
-    var html = template.html(list_a, list_b, list_c, list_d);
-     res.send(html);
+    var html = template.html(list_a, list_b, list_c, list_d, notetxt, myLocaIP);
+    res.send(html);
   });
+
+
+  // ================= add a LIST from FORM =========================================
+
+  app.post('/addurl', function (req, res) {
+    var body = '';
+    req.on('data', (data) => {
+      body = body + data;
+    });
+
+    req.on('end', () => {
+
+      fs.readFile(path.join(__dirname, 'public', 'url_list.json'), (err, data) => {
+
+        var obj = JSON.parse(data);
+        var post = qs.parse(body);
+        console.log(post.listtogo);
+
+        if (post.linktitle && post.linkurl) {
+          obj[post.listtogo].push({ title: post.linktitle, url: post.linkurl });
+          var json = JSON.stringify(obj);
+          // writejsonfile(res, json);
+          fs.writeFile(path.join(__dirname, 'public', 'url_list.json'), json, function (err) { });
+        }
+
+      });
+
+    });
+    res.redirect('/');
+  });
+
+
+  // ================= Delete a ITEM from lists =========================================
+
+  app.post('/delurl', function (req, res) {
+
+    var key, value;
+
+    req.on('data', (data) => {
+      var data = String(data);
+      var post = qs.parse(data);
+      key = Object.keys(post)[0];
+      value = Object.values(post)[0];
+
+    });
+
+    req.on('end', () => {
+      fs.readFile(path.join(__dirname, 'public', 'url_list.json'), (err, data) => {
+        var obj = JSON.parse(data);
+        console.log(key + value)
+        obj[key].splice(value, 1)
+        var json = JSON.stringify(obj);
+        fs.writeFile(path.join(__dirname, 'public', 'url_list.json'), json, function (err) { });
+      });
+
+    });
+
+    res.redirect('/');
+  });
+
+  // ================= Reorder Lists =========================================
+
+  app.post('/reorder', function (req, res) {
+    var arraylist = [];
+    var key, value;
+
+    req.on('data', (data) => {
+      var data = String(data);
+      var post = qs.parse(data);
+      key = Object.keys(post)[0];
+      value = Object.values(post)[0];
+      arraylist = key.split(":");
+
+    });
+    req.on('end', () => {
+      fs.readFile(path.join(__dirname, 'public', 'url_list.json'), (err, data) => {
+        var obj = JSON.parse(data);
+        var newobj = [];
+        obj[value].forEach((e, index) => {
+          newobj.push(obj[value][arraylist[index]]);
+        });
+        obj[value] = newobj;
+
+        var json = JSON.stringify(obj);
+        fs.writeFile(path.join(__dirname, 'public', 'url_list.json'), json, function (err) { });
+
+
+      });
+
+    });
+
+    res.redirect('/');
+  });
+
+
+
+  // ================= Append Note =========================================
+
+  app.post('/appendnote', function (req, res) {
+
+    var key, value;
+    req.on('data', (data) => {
+      var post = qs.parse(String(data));
+      key = Object.keys(post)[0];
+      value = Object.values(post)[0];
+    });
+    req.on('end', () => {
+      fs.writeFile(path.join(__dirname, 'public', 'note_txt.txt'), value, function (err) {
+      });
+
+    });
+    res.redirect('/');
+  });
+
+
+
+
+
+  // if (req.url === '/addurl') {
+
+  //   var body = '';
+  //   req.on('data', (data) => {
+  //     body = body + data;
+  //   });
+
+  //   req.on('end', () => {
+  //     fs.readFile(path.join(__dirname, 'public', 'url_list.json'), (err, data) => {
+  //       var obj = JSON.parse(data);
+  //       var post = qs.parse(body);
+  //       console.log(post.listtogo);
+  //       if (post.linktitle && post.linkurl) {
+
+  //         obj[post.listtogo].push({ title: post.linktitle, url: post.linkurl });
+  //         var json = JSON.stringify(obj);
+  //         writejsonfile(res, json);
+
+  //       }
+  //     });
+
+  //     res.redirect('/');
+  //   });
+  // }
+
+
+
+
 });
 
 
-
-// app.get('/',  (req, res)=> {
-//   res.sendFile(path.join(__dirname, 'public', 'template.html'));
-// });
 
 
 
 
 //=======PACKAGING function=================================================================
+
+function writejsonfile(res, data) {
+  fs.writeFile(path.join(__dirname, 'data', 'url_list.json'), data, function (err) {
+    res.writeHead(302, { Location: `/` });
+    res.end();
+  });
+};
+
 
 
 function appendItem(obj, listname, listdata) {
