@@ -1,5 +1,5 @@
 var template = {
-  html: function (listA, listB, listC, listD, note, myIP) {
+  html: function (listA, listB, listC, listD, listE, note, myIP) {
     return `
       <html>
       <head>
@@ -19,6 +19,7 @@ var template = {
                   <option value="listB"> b</option>
                   <option value="listC"> c</option>
                   <option value="listD"> d</option>
+                  <option value="listE">  e</option>
                  </select>
                   <input type="text" name="linktitle" placeholder="title" style="width:130px;" autocomplete="off">
                   <input type="text" name="linkurl" placeholder="url" style="width:300px;" autocomplete="off">
@@ -65,6 +66,15 @@ var template = {
              </form>
              <ul id="list-4" class="sortable">
                  ${listD}
+              </ul>
+              </div>
+
+              <div>
+             <form id="reorder" action="/reorder" method="POST">
+             <button value="listE"  id="sbtn-5" type="submit" form="reorder" formaction="/reorder" formmethod="POST"  class="circle">save</button>
+             </form>
+             <ul id="list-5" class="sortable">
+                 ${listE}
               </ul>
               </div>
 

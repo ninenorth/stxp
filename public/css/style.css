@@ -42,7 +42,7 @@ body {
   overflow-y: scroll;
    background: #fafdfd;
   margin: 50px;
-  font-family: 'Barlow';
+  font-family: 'Barlow Semi Condensed';
   /* font-family: Formular_regular; */
   /* background: radial-gradient(ellipse at center, #fcfff4 0%, #dfe5d7 50%, #b3bead 100%); */
 }
@@ -80,29 +80,18 @@ body {
   line-height: 1em;
 }
 
-#list-1, #list-2{
-  font-size: 20px;
-  font-family: 'Barlow Semi Condensed';
-  /* font-family: Formular_medium; */
-  /* text-transform: uppercase; */
-  font-weight: 500;
-  text-transform: capitalize;
-  width: 220px;
-  line-height :37px;
 
-   }
-
- 
 
 ul.sortable {
   display: block;
   list-style: none;
-  width: 210px;
-  font-size: 13px;
+  width: 205px;
+  font-size: 18px;
   margin: 15px 0;
   padding: 5px;
-  line-height :30px;
-  font-weight: 500;
+  line-height :38px;
+  font-weight: 600;
+  text-transform: uppercase;
 
 }
 
@@ -110,18 +99,11 @@ ul.sortable {
 ul.sortable > li {
   display: block;
   margin: 1px;
-  height: 30px;
+  height: 39px;
    /* background: #fff; */
   
 }
-#list-1 > li {
-  height: 39px;
-}
-
- #list-2 > li {
-  height: 39px;
-}
-
+ 
 
 ul.sortable > li >a {
    padding-left: 10px;
@@ -155,13 +137,13 @@ ul.sortable > li.dragging{
 .notesbox {
   background-color: #fafdfd;
   font-family: 'Barlow';
-  font-weight: 600;
+  font-weight: 500;
    color: rgb(105, 110, 110);
   margin: 20px;
    overflow: hidden;
    border: none;
-   font-size: 9px;
-    line-height: 20px;
+   font-size: 12px;
+    line-height: 23px;
 }
 
 button{
@@ -185,7 +167,7 @@ color: #000;
 
 .notebtn{
   font-family: Domaine_text_black;
-  font-size: 24px;
+  font-size: 18px;
   background-color: #fafdfd;
    
   margin-left: 18px;
@@ -212,7 +194,7 @@ color: #000;
  }
 
 input::placeholder {
-  color: black;
+  color: rgb(188, 199, 198);
    font-family: Domaine_text_black;
    font-size: 14px;
    margin-left: 30px;
@@ -228,7 +210,7 @@ input{
  
 }
 select {
-  color: black;
+  color: rgb(188, 199, 198);
   background-color: #f2f7f7;
    font-family: Domaine_text_black;
    font-size: 14px;

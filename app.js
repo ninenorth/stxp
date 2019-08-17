@@ -1,25 +1,3 @@
-// var express = require('express');
-// var path = require('path');
-// var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
-
-// var indexRouter = require('./routes/index');
-
-// var app = express();
-
-// app.use(logger('dev'));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
-// app.use(cookieParser());
-
-// // app.set('views', __dirname + '/views');
-// // app.set('view engine', 'ejs');
-// // app.engine('html', require('ejs').renderFile);
-
-
-// app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use('/', indexRouter);
 
 const express = require('express');
 const path = require('path');
@@ -40,7 +18,8 @@ app.use(express.static('public'))
 
 app.get('/', (req, res) => {
 
-  var myLocaIP = internalIp.address();
+  var myLocaIP =internalIp.address();
+
   // ============== Add Note Box ==========================================
   fs.readFile(path.join(__dirname, 'public', 'note_txt.txt'), (err, data) => {
     notetxt = String(data);
@@ -56,6 +35,7 @@ app.get('/', (req, res) => {
     var list_b = '';
     var list_c = '';
     var list_d = '';
+    var list_e = '';
 
     var obj = JSON.parse(data);
 
@@ -63,10 +43,13 @@ app.get('/', (req, res) => {
     list_b = appendItem(obj, 'listB', list_b);
     list_c = appendItem(obj, 'listC', list_c);
     list_d = appendItem(obj, 'listD', list_d);
+    list_e = appendItem(obj, 'listE', list_e);
 
-    var html = template.html(list_a, list_b, list_c, list_d, notetxt, myLocaIP);
+    var html = template.html(list_a, list_b, list_c, list_d, list_e, notetxt, myLocaIP);
     res.send(html);
   });
+
+});
 
 
   // ================= add a LIST from FORM =========================================
@@ -183,51 +166,8 @@ app.get('/', (req, res) => {
 
 
 
-
-
-  // if (req.url === '/addurl') {
-
-  //   var body = '';
-  //   req.on('data', (data) => {
-  //     body = body + data;
-  //   });
-
-  //   req.on('end', () => {
-  //     fs.readFile(path.join(__dirname, 'public', 'url_list.json'), (err, data) => {
-  //       var obj = JSON.parse(data);
-  //       var post = qs.parse(body);
-  //       console.log(post.listtogo);
-  //       if (post.linktitle && post.linkurl) {
-
-  //         obj[post.listtogo].push({ title: post.linktitle, url: post.linkurl });
-  //         var json = JSON.stringify(obj);
-  //         writejsonfile(res, json);
-
-  //       }
-  //     });
-
-  //     res.redirect('/');
-  //   });
-  // }
-
-
-
-
-});
-
-
-
-
-
-
 //=======PACKAGING function=================================================================
 
-function writejsonfile(res, data) {
-  fs.writeFile(path.join(__dirname, 'data', 'url_list.json'), data, function (err) {
-    res.writeHead(302, { Location: `/` });
-    res.end();
-  });
-};
 
 
 
@@ -241,13 +181,6 @@ function appendItem(obj, listname, listdata) {
   return listdata;
 };
 
-
-
-
-// const PORT = process.env.PORT || 3000
-// app.listen(PORT, () => {
-//   console.log(`app listening on port ${PORT}`);
-// });
 
 
 
